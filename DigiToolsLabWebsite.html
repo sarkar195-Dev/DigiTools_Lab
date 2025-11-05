@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigiToolsLab - Premium Digital Tools</title>
+    <!-- Load Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font and scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fc; /* Light background */
+        }
+        /* Custom styling for cards for subtle lift */
+        .product-card, .blog-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .product-card:hover, .blog-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        /* Modal transition effect */
+        .modal-content {
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+        /* Custom page transition effect */
+        .page-content {
+            opacity: 1;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .page-hidden {
+            opacity: 0;
+            display: none;
+        }
+        /* Truncate text for excerpts */
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;  
+            overflow: hidden;
+        }
+        /* Styles for prose content on legal pages */
+        .prose-content h2 {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 700;
+            color: #1c3d5a; /* primary-blue */
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+        .prose-content h3 {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 600;
+            color: #1c3d5a; /* primary-blue */
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .prose-content p, .prose-content li {
+            font-size: 1rem; /* 16px */
+            line-height: 1.75;
+            margin-bottom: 1.25rem;
+        }
+        .prose-content ul {
+            list-style-type: disc;
+            padding-left: 2rem;
+        }
+        .prose-content a {
+            color: #22d3ee; /* secondary-cyan */
+            text-decoration: none;
+        }
+        .prose-content a:hover {
+            text-decoration: underline;
+        }
+        /* Simple table styles for dashboard */
+        .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .dashboard-table th, .dashboard-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb; /* gray-200 */
+            text-align: left;
+            vertical-align: middle;
+        }
+        .dashboard-table th {
+            background-color: #f9fafb; /* gray-50 */
+            font-weight: 600;
+            color: #1c3d5a; /* primary-blue */
+        }
+        .dashboard-table tbody tr:hover {
+            background-color: #f9fafb; /* gray-50 */
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#1c3d5a',
+                        'secondary-cyan': '#22d3ee',
+                        'accent-orange': '#f97316',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-gray-800">
+
+    <!-- 1. Header and Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="#" onclick="renderPage('home-page')" class="text-2xl font-bold text-primary-blue">Digi<span class="text-secondary-cyan">ToolsLab</span></a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="#" onclick="renderPage('home-page')" class="hover:text-secondary-cyan transition duration-150">Home</a>
+                <a href="#" onclick="renderPage('about-page')" class="hover:text-secondary-cyan transition duration-150">About</a>
+                <a href="#" onclick="renderPage('shop-page', null, 1)" class="hover:text-secondary-cyan transition duration-150">Shop</a>
+                <a href="#" onclick="renderPage('blog-page', null, 1)" class="hover:text-secondary-cyan transition duration-150">Blog</a>
+                <a href="#" onclick="renderPage('contact-page')" class="hover:text-secondary-cyan transition duration-150">Contact</a>
+                <a href="#" onclick="openAuthModal('login')" class="text-accent-orange hover:text-red-600 transition duration-150">Login / Register</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden p-2 text-primary-blue rounded-md hover:bg-gray-100 transition duration-150" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1 text-base">
+                <a href="#" onclick="renderPage('home-page')" class="block px-3 py-2 rounded-md hover:bg-gray-50">Home</a>
+                <a href="#" onclick="renderPage('about-page')" class="block px-3 py-2 rounded-md hover:bg-gray-50">About</a>
+                <a href="#" onclick="renderPage('shop-page', null, 1)" class="block px-3 py-2 rounded-md hover:bg-gray-50">Shop</a>
+                <a href="#" onclick="renderPage('blog-page', null, 1)" class="block px-3 py-2 rounded-md hover:bg-gray-50">Blog</a>
+                <a href="#" onclick="renderPage('contact-page')" class="block px-3 py-2 rounded-md hover:bg-gray-50">Contact</a>
+                <a href="#" onclick="openAuthModal('login')" class="block px-3 py-2 rounded-md text-accent-orange hover:bg-gray-50">Login / Register</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN PAGE CONTAINER -->
+    <main class="min-h-screen">
+        
+        <!-- ========================================================================= -->
+        <!-- HOME PAGE CONTENT -->
+        <!-- ========================================================================= -->
+        <div id="home-page" class="page-content">
+            <!-- (Home Page Content is unchanged, so it is collapsed for brevity) -->
+            <!-- 2. Hero Section -->
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-20 md:py-24 bg-white rounded-xl shadow-lg my-8">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6">
+                        <p class="text-lg text-secondary-cyan font-semibold">Welcome to</p>
+                        <h1 class="text-5xl md:text-6xl font-extrabold leading-tight text-primary-blue">
+                            DigiTools <span class="text-accent-orange">Lab</span>
+                        </h1>
+                        <p class="text-xl text-gray-600">
+                            Your trusted platform for **authentic premium digital tools** at unbelievably low prices. Access excellence for every task.
+                        </p>
+                        <a href="#" onclick="renderPage('shop-page', null, 1)" class="inline-block px-8 py-3 bg-accent-orange text-white font-bold rounded-full shadow-lg hover:bg-orange-600 transition duration-300 transform hover:scale-105">
+                            Explore Tools Now
+                        </a>
+                    </div>
+                    <div class="hidden md:block">
+                        <svg class="w-full h-auto text-primary-blue/70" viewBox="0 0 500 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="50" y="50" width="400" height="200" rx="15" fill="currentColor" opacity="0.1"></rect>
+                            <path d="M100 80h300" stroke="currentColor" stroke-width="8" stroke-linecap="round" opacity="0.2"></path>
+                            <circle cx="120" cy="80" r="10" fill="#f97316"></circle>
+                            <path d="M100 120h300" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.5"></path>
+                            <path d="M100 150h250" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.5"></path>
+                            <path d="M100 180h320" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.5"></path>
+                            <path d="M100 210h180" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.5"></path>
+                            <rect x="300" y="195" width="100" height="30" rx="5" fill="#22d3ee" class="animate-pulse"></rect>
+                            <text x="350" y="215" text-anchor="middle" font-size="12" fill="#1c3d5a" font-weight="bold">AI Power</text>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+            <!-- 3. Feature/Benefits Grid -->
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-secondary-cyan">
+                        <div class="text-3xl text-secondary-cyan mb-2">🚚</div>
+                        <h3 class="font-bold text-lg">Instant Delivery</h3>
+                        <p class="text-sm text-gray-500">Access codes sent instantly.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-accent-orange">
+                        <div class="text-3xl text-accent-orange mb-2">🛡️</div>
+                        <h3 class="font-bold text-lg">Money Back</h3>
+                        <p class="text-sm text-gray-500">Guaranteed refund policy.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-primary-blue">
+                        <div class="text-3xl text-primary-blue mb-2">💬</div>
+                        <h3 class="font-bold text-lg">24/7 Support</h3>
+                        <p class="text-sm text-gray-500">Expert help, anytime, anywhere.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-500">
+                        <div class="text-3xl text-green-500 mb-2">🤝</div>
+                        <h3 class="font-bold text-lg">Authentic Access</h3>
+                        <p class="text-sm text-gray-500">100% genuine accounts.</p>
+                    </div>
+                </div>
+            </section>
+            <!-- 4. Group Tools Package -->
+            <section class="bg-primary-blue text-white py-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-extrabold mb-10 text-center text-white">Group Tools Package</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div class="bg-white text-gray-800 p-8 rounded-xl shadow-2xl transition duration-300 hover:scale-[1.02]">
+                            <p class="text-sm font-semibold text-secondary-cyan mb-2">Duel Combo Package</p>
+                            <h3 class="text-3xl font-bold text-primary-blue">Semrush + Ubersuggest</h3>
+                            <div class="my-6">
+                                <span class="text-5xl font-extrabold text-accent-orange">৳ 290</span>
+                                <span class="text-lg text-gray-500"> / Monthly</span>
+                            </div>
+                            <ul class="list-disc list-inside text-gray-600 space-y-2 mb-8">
+                                <li>Semrush Pro Access</li>
+                                <li>Ubersuggest Premium Features</li>
+                                <li>Shared Account Access</li>
+                            </ul>
+                            <a href="#" onclick="renderPage('shop-page', null, 1)" class="w-full block text-center bg-accent-orange text-white font-bold py-3 rounded-lg shadow-md hover:bg-orange-600 transition duration-150">
+                                Buy Now
+                            </a>
+                        </div>
+                        <div class="bg-white text-gray-800 p-8 rounded-xl shadow-2xl border-4 border-secondary-cyan relative transition duration-300 hover:scale-[1.02]">
+                            <div class="absolute -top-3 right-0 bg-secondary-cyan text-primary-blue text-xs font-bold px-4 py-1 rounded-l-full">
+                                Popular
+                            </div>
+                            <p class="text-sm font-semibold text-secondary-cyan mb-2">Duel Combo Package</p>
+                            <h3 class="text-3xl font-bold text-primary-blue">Semrush + ChatGPT-4</h3>
+                            <div class="my-6">
+                                <span class="text-5xl font-extrabold text-accent-orange">৳ 299</span>
+                                <span class="text-lg text-gray-500"> / Monthly</span>
+                            </div>
+                            <ul class="list-disc list-inside text-gray-600 space-y-2 mb-8">
+                                <li>Semrush Pro Access</li>
+                                <li>ChatGPT-4 Premium Account</li>
+                                <li>Dedicated Support</li>
+                            </ul>
+                            <a href="#" onclick="renderPage('shop-page', null, 1)" class="w-full block text-center bg-primary-blue text-white font-bold py-3 rounded-lg shadow-md hover:bg-primary-blue/80 transition duration-150">
+                                Buy Now
+                            </a>
+                        </div>
+                    </div>
+                    <div class="text-center mt-12">
+                        <a href="#" onclick="renderPage('shop-page', null, 1)" class="inline-block text-white font-semibold border-b-2 border-white hover:text-secondary-cyan transition duration-150">
+                            See All Group Tools &rarr;
+                        </a>
+                    </div>
+                </div>
+            </section>
+            <!-- 5. Promotional Banners -->
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gradient-to-r from-red-500 to-accent-orange p-8 rounded-xl shadow-lg text-center text-white">
+                    <h3 class="text-3xl font-extrabold mb-3">GET A WELCOME 10% OFF</h3>
+                    <p class="text-lg mb-6">On your first order. Don't miss out on this exclusive offer!</p>
+                    <a href="#" onclick="openAuthModal('register')" class="inline-block px-6 py-3 bg-white text-accent-orange font-bold rounded-full shadow-md hover:bg-gray-100 transition duration-150">
+                        REGISTER NOW
+                    </a>
+                </div>
+                <div class="bg-gradient-to-r from-primary-blue to-secondary-cyan p-8 rounded-xl shadow-lg text-center text-white">
+                    <h3 class="text-3xl font-extrabold mb-3">BUY MULTIPLE TOOLS</h3>
+                    <p class="text-lg mb-6">Contact us to get a massive bulk discount on combined orders.</p>
+                    <a href="#" onclick="renderPage('contact-page')" class="inline-block px-6 py-3 bg-white text-primary-blue font-bold rounded-full shadow-md hover:bg-gray-100 transition duration-150">
+                        CONTACT HERE
+                    </a>
+                </div>
+            </section>
+            <!-- 6. FAQ Section -->
+            <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <h2 class="text-3xl font-extrabold text-primary-blue mb-10 text-center">Frequently Asked Questions</h2>
+                <div class="space-y-4">
+                    <div class="bg-white p-5 rounded-lg shadow-md border-l-4 border-secondary-cyan">
+                        <h4 class="font-bold text-lg text-primary-blue mb-1">How can I place an order?</h4>
+                        <p class="text-gray-600">You can order directly through our website. We also accept orders through our official Facebook page and WhatsApp.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow-md border-l-4 border-secondary-cyan">
+                        <h4 class="font-bold text-lg text-primary-blue mb-1">What if I don't receive the correct product/service?</h4>
+                        <p class="text-gray-600">If you don't receive the correct product after ordering, please contact our team directly on Facebook or WhatsApp. We are committed to providing you with the correct item.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow-md border-l-4 border-secondary-cyan">
+                        <h4 class="font-bold text-lg text-primary-blue mb-1">How long does delivery take?</h4>
+                        <p class="text-gray-600">Orders are typically processed and delivered within **5 to 30 minutes**. In rare cases, it may take up to 12 to 24 hours.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow-md border-l-4 border-secondary-cyan">
+                        <h4 class="font-bold text-lg text-primary-blue mb-1">Are your products original?</h4>
+                        <p class="text-gray-600">Absolutely! All our products are **100% original** and authentic. You can check our customer reviews for assurance on the quality of service we provide.</p>
+                    </div>
+                </div>
+            </section>
+        </div> <!-- End of home-page -->
+
+
+        <!-- ========================================================================= -->
+        <!-- SHOP PAGE CONTENT (Dynamic Page with Pagination) -->
+        <!-- ========================================================================= -->
+        <div id="shop-page" class="page-content page-hidden min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <!-- (Shop Page Content is unchanged, so it is collapsed for brevity) -->
+                <!-- Shop Header/Banner -->
+                <div class="bg-primary-blue text-white p-8 md:p-12 rounded-xl shadow-xl mb-8">
+                    <p class="text-secondary-cyan font-semibold text-lg mb-2">Exclusive Access</p>
+                    <h1 class="text-4xl md:text-5xl font-extrabold mb-4">The Digital Tools Marketplace</h1>
+                    <p class="text-xl max-w-3xl text-gray-300">
+                        Browse our full catalog of premium SEO, AI, and productivity tools, all available for instant, authentic access.
+                    </p>
+                </div>
+                <!-- Main Shop Grid: Sidebar + Products -->
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
+                    <!-- Column 1: Sidebar Filters -->
+                    <aside class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg h-fit sticky top-24">
+                        <h2 class="text-xl font-bold text-primary-blue mb-4 border-b pb-2">Filter Tools</h2>
+                        <div class="mb-6">
+                            <input type="text" placeholder="Search by name..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-secondary-cyan focus:border-secondary-cyan transition">
+                        </div>
+                        <div class="mb-6">
+                            <h3 class="font-semibold text-gray-800 mb-2">Categories</h3>
+                            <ul class="space-y-2 text-sm">
+                                <li><a href="#" class="text-secondary-cyan font-bold hover:underline">All Tools (30)</a></li>
+                                <li><a href="#" class="text-gray-600 hover:text-primary-blue">SEO & Marketing (8)</a></li>
+                                <li><a href="#" class="text-gray-600 hover:text-primary-blue">Writing & Plagiarism (3)</a></li>
+                                <li><a href="#" class="text-gray-600 hover:text-primary-blue">E-commerce (4)</a></li>
+                                <li><a href="#" class="text-gray-600 hover:text-primary-blue">AI & Productivity (10)</a></li>
+                                <li><a href="#" class="text-gray-600 hover:text-primary-blue">Design & Media (3)</a></li>
+                            </ul>
+                        </div>
+                        <div class="mb-6 border-t pt-4">
+                            <h3 class="font-semibold text-gray-800 mb-3">Price Range</h3>
+                            <input type="range" min="100" max="3000" value="3000" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg">
+                            <div class="flex justify-between text-sm mt-1 text-gray-500">
+                                <span>৳ 100</span>
+                                <span>৳ 3,000+</span>
+                            </div>
+                        </div>
+                        <div class="border-t pt-4">
+                            <h3 class="font-semibold text-gray-800 mb-2">Availability</h3>
+                            <div class="space-y-2">
+                                <label class="flex items-center text-sm text-gray-600">
+                                    <input type="checkbox" checked class="form-checkbox h-4 w-4 text-secondary-cyan rounded border-gray-300 focus:ring-secondary-cyan">
+                                    <span class="ml-2">In Stock</span>
+                                </label>
+                                <label class="flex items-center text-sm text-gray-600">
+                                    <input type="checkbox" class="form-checkbox h-4 w-4 text-secondary-cyan rounded border-gray-300 focus:ring-secondary-cyan">
+                                    <span class="ml-2">Group Buy</span>
+                                </label>
+                            </div>
+                        </div>
+                    </aside>
+                    <!-- Column 2: Product Listing & Controls -->
+                    <div class="lg:col-span-3">
+                        <div class="flex justify-between items-center mb-6 border-b pb-3">
+                            <p id="results-count" class="text-sm font-medium text-gray-600">Showing...</p>
+                            <select class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-secondary-cyan focus:border-secondary-cyan">
+                                <option>Default Sorting</option>
+                                <option>Sort by Price: Low to High</option>
+                                <option>Sort by Price: High to Low</option>
+                            </select>
+                        </div>
+                        <div id="product-list-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <!-- Products will be injected here by JavaScript -->
+                        </div>
+                        <div id="pagination-controls" class="flex justify-center mt-12">
+                            <!-- Pagination links will be injected here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of shop-page -->
+
+
+        <!-- ========================================================================= -->
+        <!-- BLOG PAGE CONTENT (Dynamic Page with Pagination) -->
+        <!-- ========================================================================= -->
+        <div id="blog-page" class="page-content page-hidden min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <!-- (Blog Page Content is unchanged, so it is collapsed for brevity) -->
+                <!-- Blog Header/Banner -->
+                <div class="bg-white p-8 md:p-12 rounded-xl shadow-xl mb-8 border-l-4 border-primary-blue">
+                    <p class="text-primary-blue font-semibold text-lg mb-2">Our Insights</p>
+                    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 text-primary-blue">The DigiTools Blog</h1>
+                    <p class="text-xl max-w-3xl text-gray-600">
+                        Tips, tutorials, and analysis on the best digital tools to grow your business and productivity.
+                    </p>
+                </div>
+                <!-- Main Blog Grid: Sidebar + Posts -->
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
+                    <!-- Column 1: Sidebar (Similar to Shop) -->
+                    <aside class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg h-fit sticky top-24">
+                        <h2 class="text-xl font-bold text-primary-blue mb-4 border-b pb-2">Blog Menu</h2>
+                        <!-- Search Bar -->
+                        <div class="mb-6">
+                            <input type="text" placeholder="Search articles..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-secondary-cyan focus:border-secondary-cyan transition">
+                        </div>
+                        <!-- Categories -->
+                        <div class="mb-6">
+                            <h3 class="font-semibold text-gray-800 mb-2">Categories</h3>
+                            <ul class="space-y-2 text-sm">
+                                <li><a href="#" class="text-secondary-cyan font-bold hover:underline">All Articles (24)</a></li>
+                                <li><a href="#" class="text-gray-600 hover:text-primary-blue">SEO & Marketing (8)</a></li>
+                                <li><a href="#" class="text-gray-600 hover:text-primary-blue">AI Tools (4)</a></li>
+                                <li><a href="#" class="text-gray-600 hover:text-primary-blue">Productivity (6)</a></li>
+                                <li><a href="#" class="text-gray-600 hover:text-primary-blue">E-commerce Tips (4)</a></li>
+                                <li><a href="#" class="text-gray-600 hover:text-primary-blue">Announcements (2)</a></li>
+                            </ul>
+                        </div>
+                        <!-- Recent Posts -->
+                        <div class="border-t pt-4">
+                            <h3 class="font-semibold text-gray-800 mb-3">Recent Posts</h3>
+                            <ul id="recent-posts-list" class="space-y-3 text-sm">
+                                <!-- Recent posts will be injected here by JavaScript -->
+                                <li class="text-gray-500">Loading...</li>
+                            </ul>
+                        </div>
+                    </aside>
+                    <!-- Column 2: Blog Post Listing -->
+                    <div class="lg:col-span-3">
+                        <!-- Sort and Results Count (Dynamic Content) -->
+                        <div class="flex justify-between items-center mb-6 border-b pb-3">
+                            <p id="blog-results-count" class="text-sm font-medium text-gray-600">Showing...</p>
+                        </div>
+                        <!-- Blog Post Grid Container (Dynamic Content) -->
+                        <div id="blog-list-container" class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                            <!-- Blog posts will be injected here by JavaScript -->
+                        </div>
+                        <!-- Pagination Container (Dynamic Content) -->
+                        <div id="blog-pagination-controls" class="flex justify-center mt-12">
+                            <!-- Pagination links will be injected here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of blog-page -->
+
+
+        <!-- ========================================================================= -->
+        <!-- ABOUT PAGE CONTENT (Unchanged) -->
+        <!-- ========================================================================= -->
+        <div id="about-page" class="page-content page-hidden">
+            <!-- (About Page Content is unchanged, so it is collapsed for brevity) -->
+            <div class="bg-primary-blue text-white py-20 mb-8 shadow-xl">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <p class="text-secondary-cyan font-semibold text-lg mb-2">Who We Are</p>
+                    <h1 class="text-5xl font-extrabold mb-4">Our Story & Commitment</h1>
+                    <p class="text-xl max-w-3xl mx-auto text-gray-300">
+                        Driving success by making premium digital tools accessible and affordable to everyone, everywhere.
+                    </p>
+                </div>
+            </div>
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid md:grid-cols-2 gap-12">
+                <div class="bg-white p-8 rounded-xl shadow-lg border-l-4 border-accent-orange">
+                    <h3 class="text-3xl font-bold text-accent-orange mb-4 flex items-center">
+                        <span class="text-4xl mr-3">🚀</span> Our Mission
+                    </h3>
+                    <p class="text-gray-600 text-lg">
+                        To break down the barriers of high subscription costs. We strive to provide **authentic, shared access** to the world's best SEO, writing, e-commerce, and productivity tools, ensuring every entrepreneur and student has the resources they need to thrive.
+                    </p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg border-l-4 border-secondary-cyan">
+                    <h3 class="text-3xl font-bold text-secondary-cyan mb-4 flex items-center">
+                        <span class="text-4xl mr-3">💡</span> Our Vision
+                    </h3>
+                    <p class="text-gray-600 text-lg">
+                        To become the leading and most trusted global platform for discounted digital tool access, recognized for our commitment to **transparency, immediate delivery**, and unparalleled customer support, fostering a community of digitally empowered users.
+                    </p>
+                </div>
+            </section>
+            <section class="bg-gray-100 py-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-extrabold text-primary-blue mb-12 text-center">Core Values that Guide Us</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="text-center p-6 bg-white rounded-xl shadow-md transform hover:shadow-xl transition duration-300">
+                            <div class="text-4xl text-primary-blue mb-3">⭐</div>
+                            <h4 class="font-bold text-xl mb-2">Quality & Authenticity</h4>
+                            <p class="text-sm text-gray-500">Only verified and 100% original accounts and tools are offered to our community.</p>
+                        </div>
+                        <div class="text-center p-6 bg-white rounded-xl shadow-md transform hover:shadow-xl transition duration-300">
+                            <div class="text-4xl text-accent-orange mb-3">⏱️</div>
+                            <h4 class="font-bold text-xl mb-2">Speed & Efficiency</h4>
+                            <p class="text-sm text-gray-500">Instant access delivery guarantees you start working on your projects immediately.</p>
+                        </div>
+                        <div class="text-center p-6 bg-white rounded-xl shadow-md transform hover:shadow-xl transition duration-300">
+                            <div class="text-4xl text-secondary-cyan mb-3">🛠️</div>
+                            <h4 class="font-bold text-xl mb-2">Reliable Support</h4>
+                            <p class="text-sm text-gray-500">Our expert team provides 24/7 online support for any technical issues or inquiries.</p>
+                        </div>
+                        <div class="text-center p-6 bg-white rounded-xl shadow-md transform hover:shadow-xl transition duration-300">
+                            <div class="text-4xl text-green-500 mb-3">🤝</div>
+                            <h4 class="font-bold text-xl mb-2">Trust & Integrity</h4>
+                            <p class="text-sm text-gray-500">We operate with full transparency and offer a guaranteed money-back policy.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+                <h2 class="text-3xl font-extrabold text-primary-blue mb-4">Meet the Visionary</h2>
+                <p class="text-lg text-gray-600 mb-10">
+                    The founder's commitment drives our passion for digital accessibility.
+                </p>
+                <div class="bg-white p-8 rounded-xl shadow-2xl inline-block max-w-sm">
+                    <img src="https://placehold.co/150x150/1c3d5a/ffffff?text=Founder" alt="Founder" class="rounded-full w-36 h-36 mx-auto mb-4 border-4 border-secondary-cyan">
+                    <h4 class="text-2xl font-bold text-primary-blue">M.A. Khan</h4>
+                    <p class="text-accent-orange font-semibold mb-3">Chief Executive Officer</p>
+                    <p class="text-sm text-gray-600 italic">
+                        "Empowering the digital workforce with the best tools shouldn't be a luxury, it should be the standard."
+                    </p>
+                </div>
+            </section>
+        </div> <!-- End of about-page -->
+
+
+        <!-- ========================================================================= -->
+        <!-- CONTACT PAGE CONTENT (Unchanged) -->
+        <!-- ========================================================================= -->
+        <div id="contact-page" class="page-content page-hidden min-h-screen py-16 px-4 sm:px-6 lg:px-8">
+            <!-- (Contact Page Content is unchanged, so it is collapsed for brevity) -->
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h1 class="text-5xl font-extrabold text-gray-900 tracking-tight sm:text-6xl">
+                        Contact Us
+                    </h1>
+                    <p class="mt-4 text-xl text-gray-500 max-w-2xl mx-auto">
+                        We're here to help and answer any question you might have. We look forward to hearing from you!
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 bg-white p-8 sm:p-12 rounded-2xl shadow-xl">
+                    <div class="lg:col-span-2">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+                        <form onsubmit="event.preventDefault(); alert('Form submission logic is not implemented yet.');" class="space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="full-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                    <input type="text" name="full-name" id="full-name" autocomplete="name" placeholder="Your Name" required 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-cyan focus:border-secondary-cyan transition duration-150 ease-in-out">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                    <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-cyan focus:border-secondary-cyan transition duration-150 ease-in-out">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="phone-number" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                    <input type="tel" name="phone-number" id="phone-number" autocomplete="tel" placeholder="(555) 123-4567" 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-cyan focus:border-secondary-cyan transition duration-150 ease-in-out">
+                                </div>
+                                <div>
+                                    <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                    <input type="text" name="subject" id="subject" placeholder="Question about a tool" required 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-cyan focus:border-secondary-cyan transition duration-150 ease-in-out">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                <textarea id="message" name="message" rows="5" placeholder="Tell us how we can help..." required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-cyan focus:border-secondary-cyan transition duration-150 ease-in-out resize-none"></textarea>
+                            </div>
+                            <div>
+                                <button type="submit" class="w-full flex justify-center py-3 px-6 border border-transparent rounded-lg shadow-lg text-lg font-medium text-white bg-primary-blue hover:bg-primary-blue/90 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-cyan transform hover:scale-[1.01] active:scale-95">
+                                    Send Message
+                                </button>
+                            </div>
+                            <p class="text-xs text-center text-gray-400">Note: This is a static form and will not send an actual email.</p>
+                        </form>
+                    </div>
+                    <div class="lg:col-span-1 bg-gray-50 p-6 rounded-xl space-y-8">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">Our Details</h2>
+                        <div class="flex items-start space-x-4">
+                            <svg class="flex-shrink-0 w-6 h-6 text-secondary-cyan mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-8 7l-5.65 3.76a2 2 0 01-2.22 0L3 15m18 0l-7.89-5.26a2 2 0 00-2.22 0L3 15"></path>
+                            </svg>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Email Address</h3>
+                                <a href="mailto:contact@example.com" class="text-secondary-cyan hover:text-primary-blue transition duration-150">contact@example.com</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <svg class="flex-shrink-0 w-6 h-6 text-secondary-cyan mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.128a11.042 11.042 0 005.516 5.516l1.128-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-3.28a1 1 0 01-.948-.684l-1.498-4.493a1 1 0 01.502-1.21l2.257-1.128a11.042 11.042 0 00-5.516-5.516l-1.128 2.257a1 1 0 01-1.21.502L5 9.28A1 1 0 014.316 8V5z"></path>
+                            </svg>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Phone Number</h3>
+                                <a href="tel:+1-800-555-0199" class="text-secondary-cyan hover:text-primary-blue transition duration-150">+1 (800) 555-0199</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <svg class="flex-shrink-0 w-6 h-6 text-secondary-cyan mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Office Address</h3>
+                                <p class="text-gray-600">123 Technology Drive,<br>Innovation City, CA 90210</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-16">
+                    <h2 class="text-3xl font-bold text-primary-blue mb-6 text-center">Find Us on the Map</h2>
+                    <div class="relative w-full h-80 rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
+                        <img src="https://placehold.co/1200x400/1c3d5a/ffffff?text=Map+Placeholder" alt="Map Location Placeholder" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-primary-blue bg-opacity-30 flex items-center justify-center">
+                            <p class="text-white text-2xl font-bold p-4 rounded-lg bg-black bg-opacity-50">Physical Address Location</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of contact-page -->
+
+
+        <!-- ========================================================================= -->
+        <!-- PRIVACY POLICY PAGE CONTENT -->
+        <!-- ========================================================================= -->
+        <div id="privacy-page" class="page-content page-hidden min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <!-- (Privacy Page Content is unchanged, so it is collapsed for brevity) -->
+                <!-- Header Banner -->
+                <div class="bg-white p-8 md:p-12 rounded-xl shadow-xl mb-8 border-l-4 border-gray-500">
+                    <p class="text-gray-600 font-semibold text-lg mb-2">Legal</p>
+                    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 text-primary-blue">Privacy Policy</h1>
+                    <p class="text-xl max-w-3xl text-gray-600">
+                        Your trust is important to us. Here's how we handle your data.
+                    </p>
+                </div>
+                <!-- Main Content -->
+                <div class="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-xl shadow-lg">
+                    <div class="prose-content text-gray-700">
+                        <p class="text-sm text-gray-500">Last updated: November 5, 2025</p>
+                        <h2>1. Introduction</h2>
+                        <p>Welcome to DigiToolsLab ("we," "our," or "us"). We are committed to protecting your privacy...</p>
+                        <h2>2. Information We Collect</h2>
+                        <p>We may collect information about you in a variety of ways...</p>
+                        <ul>
+                            <li><strong>Personal Data:</strong> ...</li>
+                            <li><strong>Derivative Data:</strong> ...</li>
+                            <li><strong>Financial Data:</strong> ...</li>
+                            <li><strong>Cookies and Web Beacons:</strong> ...</li>
+                        </ul>
+                        <h2>3. How We Use Your Information</h2>
+                        <p>Having accurate information about you permits us to provide you with a smooth, efficient, and customized experience...</p>
+                        <h2>4. How We Share Your Information</h2>
+                        <p>We do not sell your personal information...</p>
+                        <h2>5. Data Security</h2>
+                        <p>We use administrative, technical, and physical security measures to help protect your personal information...</p>
+                        <h2>6. Your Rights</h2>
+                        <p>You have rights regarding your personal information...</p>
+                        <h2>7. Changes to This Policy</h2>
+                        <p>We reserve the right to make changes to this Privacy Policy at any time...</p>
+                        <h2>8. Contact Us</h2>
+                        <p>If you have questions or comments about this Privacy Policy, please contact us by visiting our <a href="#" onclick="renderPage('contact-page')">Contact Page</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of privacy-page -->
+
+
+        <!-- ========================================================================= -->
+        <!-- TERMS AND CONDITIONS PAGE CONTENT -->
+        <!-- ========================================================================= -->
+        <div id="terms-page" class="page-content page-hidden min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <!-- (Terms Page Content is unchanged, so it is collapsed for brevity) -->
+                <!-- Header Banner -->
+                <div class="bg-white p-8 md:p-12 rounded-xl shadow-xl mb-8 border-l-4 border-gray-500">
+                    <p class="text-gray-600 font-semibold text-lg mb-2">Legal</p>
+                    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 text-primary-blue">Terms and Conditions</h1>
+                    <p class="text-xl max-w-3xl text-gray-600">
+                        Please read these terms carefully before using our service.
+                    </p>
+                </div>
+                <!-- Main Content -->
+                <div class="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-xl shadow-lg">
+                    <div class="prose-content text-gray-700">
+                        <p class="text-sm text-gray-500">Last updated: November 5, 2025</p>
+                        <h2>1. Agreement to Terms</h2>
+                        <p>By accessing or using our Site, you agree to be bound by these Terms and Conditions...</p>
+                        <h2>2. Intellectual Property</h2>
+                        <p>The Service and its original content, features, and functionality are and will remain the exclusive property of DigiToolsLab...</p>
+                        <h2>3. Use of Our Service</h2>
+                        <p>DigiToolsLab provides shared access to various digital tools...</p>
+                        <h2>4. Purchases and Payments</h2>
+                        <p>If you wish to purchase any product or service made available through the Site...</p>
+                        <h2>5. Accounts</h2>
+                        <p>When you create an account with us, you must provide us with information that is accurate...</p>
+                        <h2>6. Limitation of Liability</h2>
+                        <p>In no event shall DigiToolsLab, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect...</p>
+                        <h2>7. Changes to These Terms</h2>
+                        <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time...</p>
+                        <h2>8. Contact Us</h2>
+                        <p>If you have any questions about these Terms, please contact us by visiting our <a href="#" onclick="renderPage('contact-page')">Contact Page</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of terms-page -->
+
+        
+        <!-- ========================================================================= -->
+        <!-- NEW: AFFILIATE DASHBOARD PAGE CONTENT -->
+        <!-- ========================================================================= -->
+        <div id="affiliate-page" class="page-content page-hidden min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <!-- Header Banner -->
+                <div class="bg-white p-8 md:p-12 rounded-xl shadow-xl mb-8 border-l-4 border-accent-orange">
+                    <p class="text-accent-orange font-semibold text-lg mb-2">Your Partner Area</p>
+                    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 text-primary-blue">Affiliate Dashboard</h1>
+                    <p class="text-xl max-w-3xl text-gray-600">
+                        Welcome to your dashboard! Track your referrals, earnings, and grow with us.
+                    </p>
+                </div>
+
+                <!-- Stat Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <!-- Card 1: Total Earnings -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-500">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="text-sm font-medium text-gray-500">TOTAL EARNINGS</p>
+                            <span class="text-green-500">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.105 0 2 .895 2 2s-.895 2-2 2-2-.895-2-2 .895-2 2 2zm0 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.105 0 2 .895 2 2s-.895 2-2 2-2-.895-2-2 .895-2 2 2z"></path></svg>
+                            </span>
+                        </div>
+                        <p class="text-4xl font-extrabold text-primary-blue">৳ 1,250.00</p>
+                        <p class="text-sm text-gray-400 mt-1">Pending Payout: ৳ 300.00</p>
+                    </div>
+                    <!-- Card 2: Total Clicks -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-secondary-cyan">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="text-sm font-medium text-gray-500">TOTAL CLICKS</p>
+                            <span class="text-secondary-cyan">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l-5 2 10-7 2 5z"></path></svg>
+                            </span>
+                        </div>
+                        <p class="text-4xl font-extrabold text-primary-blue">842</p>
+                        <p class="text-sm text-gray-400 mt-1">From your unique link</p>
+                    </div>
+                    <!-- Card 3: Conversion Rate -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-accent-orange">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="text-sm font-medium text-gray-500">CONVERSION RATE</p>
+                            <span class="text-accent-orange">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                            </span>
+                        </div>
+                        <p class="text-4xl font-extrabold text-primary-blue">3.56%</p>
+                        <p class="text-sm text-gray-400 mt-1">Based on 30 conversions</p>
+                    </div>
+                </div>
+
+                <!-- Your Affiliate Link -->
+                <div class="bg-white p-8 rounded-xl shadow-lg mb-8">
+                    <h2 class="text-2xl font-bold text-primary-blue mb-4">Your Affiliate Link</h2>
+                    <p class="text-gray-600 mb-4">Share this link to earn a 20% commission on every sale you refer. Start earning today!</p>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" readonly value="https://digitoolslab.com/ref/your-unique-id" class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-secondary-cyan">
+                        <button class="px-6 py-3 bg-secondary-cyan text-primary-blue font-semibold rounded-lg shadow-md hover:bg-cyan-400 transition duration-150">
+                            Copy Link
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Recent Commissions Table -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <h2 class="text-2xl font-bold text-primary-blue p-6 border-b">Recent Commissions</h2>
+                    <table class="dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Amount</th>
+                                <th>Commission</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-700 text-sm">
+                            <tr>
+                                <td class="font-medium">#10254</td>
+                                <td>৳ 799.00</td>
+                                <td class="font-medium text-green-600">+ ৳ 159.80</td>
+                                <td><span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">Paid</span></td>
+                                <td>Nov 04, 2025</td>
+                            </tr>
+                            <tr>
+                                <td class="font-medium">#10251</td>
+                                <td>৳ 290.00</td>
+                                <td class="font-medium text-green-600">+ ৳ 58.00</td>
+                                <td><span class="px-2 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full">Pending</span></td>
+                                <td>Nov 03, 2025</td>
+                            </tr>
+                            <tr>
+                                <td class="font-medium">#10249</td>
+                                <td>৳ 399.00</td>
+                                <td class="font-medium text-green-600">+ ৳ 79.80</td>
+                                <td><span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">Paid</span></td>
+                                <td>Nov 02, 2025</td>
+                            </tr>
+                            <tr>
+                                <td class="font-medium">#10245</td>
+                                <td>৳ 150.00</td>
+                                <td class="font-medium text-gray-500">(Rejected)</td>
+                                <td><span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full">Refunded</span></td>
+                                <td>Nov 01, 2025</td>
+                            </tr>
+                            <tr>
+                                <td class="font-medium">#10240</td>
+                                <td>৳ 550.00</td>
+                                <td class="font-medium text-green-600">+ ৳ 110.00</td>
+                                <td><span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">Paid</span></td>
+                                <td>Oct 30, 2025</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <!-- End of affiliate-page -->
+
+
+    </main>
+    
+    <!-- 8. Footer (Always Visible) -->
+    <footer class="bg-primary-blue text-white mt-12 py-10" id="contact">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+            
+            <!-- Column 1: About DigiToolsLab -->
+            <div>
+                <h4 class="text-xl font-bold mb-4 border-b border-secondary-cyan pb-2">DigiTools Lab</h4>
+                <p class="text-sm text-gray-300">
+                    We offer premium digital solutions for professionals and enthusiasts. Our innovative software and high-quality tools guarantee excellence in every task.
+                </p>
+            </div>
+
+            <!-- Column 2: Company Links -->
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Company</h4>
+                <ul class="space-y-2 text-sm text-gray-300">
+                    <li><a href="#" onclick="renderPage('home-page')" class="hover:text-secondary-cyan transition duration-150">Home</a></li>
+                    <li><a href="#" onclick="renderPage('about-page')" class="hover:text-secondary-cyan transition duration-150">About</a></li>
+                    <li><a href="#" onclick="renderPage('blog-page', null, 1)" class="hover:text-secondary-cyan transition duration-150">Blog</a></li>
+                    <li><a href="#" onclick="renderPage('privacy-page')" class="hover:text-secondary-cyan transition duration-150">Privacy & Policy</a></li>
+                    <li><a href="#" onclick="renderPage('terms-page')" class="hover:text-secondary-cyan transition duration-150">Terms and Conditions</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 3: Shop Store -->
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Shop Store</h4>
+                <ul class="space-y-2 text-sm text-gray-300">
+                    <li><a href="#" onclick="renderPage('shop-page', null, 1)" class="hover:text-secondary-cyan transition duration-150">Shop All</a></li>
+                    <li><a href="#" class="hover:text-secondary-cyan transition duration-150">Trending Tools</a></li>
+                    <li><a href="#" onclick="openAuthModal('login')" class="hover:text-secondary-cyan transition duration-150">My Orders</a></li>
+                    <!-- UPDATED: Affiliate Dashboard Link -->
+                    <li><a href="#" onclick="renderPage('affiliate-page')" class="hover:text-secondary-cyan transition duration-150">Affiliate Dashboard</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 4: My Account -->
+            <div>
+                <h4 class="text-lg font-semibold mb-4">My Account</h4>
+                <ul class="space-y-2 text-sm text-gray-300">
+                    <li><a href="#" onclick="openAuthModal('login')" class="hover:text-secondary-cyan transition duration-150">My Account</a></li>
+                    <li><a href="#" onclick="openAuthModal('login')" class="hover:text-secondary-cyan transition duration-150">Account Details</a></li>
+                    <li><a href="#" onclick="openAuthModal('login')" class="hover:text-secondary-cyan transition duration-150">Lost Password</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-gray-700 text-center text-sm text-gray-400">
+            Copyright © 2025 DigiToolsLab | Designed with <span class="text-red-500">&hearts;</span>
+        </div>
+    </footer>
+
+
+    <!-- 9. Authentication Modal (Login/Register) -->
+    <div id="auth-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden z-50 flex items-center justify-center p-4" onclick="closeAuthModal()">
+        <!-- (Modal Content is unchanged, so it is collapsed for brevity) -->
+        <div class="modal-content bg-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300 ease-out" onclick="event.stopPropagation()">
+            <div class="p-4 flex justify-end">
+                <button onclick="closeAuthModal()" class="text-gray-500 hover:text-gray-800 transition duration-150">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="flex border-b border-gray-200 text-center">
+                <button id="login-tab" onclick="showLoginForm()" class="flex-1 py-3 transition duration-150 font-semibold text-primary-blue border-b-2 border-secondary-cyan bg-white">
+                    Login
+                </button>
+                <button id="register-tab" onclick="showRegisterForm()" class="flex-1 py-3 transition duration-150 bg-gray-200 text-gray-600">
+                    Register
+                </button>
+            </div>
+            <div id="login-panel" class="p-8">
+                <h2 class="text-2xl font-bold text-primary-blue mb-6">Welcome Back!</h2>
+                <form onsubmit="event.preventDefault(); console.log('Login function not implemented yet.'); closeAuthModal();">
+                    <div class="mb-4">
+                        <label for="login-email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                        <input type="email" id="login-email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-secondary-cyan focus:border-secondary-cyan">
+                    </div>
+                    <div class="mb-6">
+                        <label for="login-password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="login-password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-secondary-cyan focus:border-secondary-cyan">
+                        <a href="#" class="block mt-2 text-accent-orange hover:text-orange-600 text-right">Lost your password?</a>
+                    </div>
+                    <button type="submit" class="w-full bg-accent-orange text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition duration-150 shadow-md">
+                        Log In
+                    </button>
+                </form>
+                <p class="mt-6 text-center text-sm text-gray-600">
+                    Need an account? 
+                    <a href="#" onclick="showRegisterForm()" class="text-primary-blue hover:text-secondary-cyan font-semibold">Register here.</a>
+                </p>
+            </div>
+            <div id="register-panel" class="p-8 hidden">
+                <h2 class="text-2xl font-bold text-primary-blue mb-6">Create Your Account</h2>
+                <form onsubmit="event.preventDefault(); console.log('Registration function not implemented yet.'); closeAuthModal();">
+                    <div class="mb-4">
+                        <label for="register-name" class="block text-sm font-medium text-gray-700 mb-1">Username (or Name)</label>
+                        <input type="text" id="register-name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-secondary-cyan focus:border-secondary-cyan">
+                    </div>
+                    <div class="mb-4">
+                        <label for="register-email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                        <input type="email" id="register-email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-secondary-cyan focus:border-secondary-cyan">
+                    </div>
+                    <div class="mb-6">
+                        <label for="register-password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="register-password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-secondary-cyan focus:border-secondary-cyan">
+                    </div>
+                    <p class="text-xs text-gray-500 mb-4">
+                        By registering, you agree to the <a href="#" onclick="renderPage('terms-page')" class="underline hover:text-primary-blue">Terms and Conditions</a>.
+                    </p>
+                    <button type="submit" class="w-full bg-secondary-cyan text-primary-blue font-bold py-3 rounded-lg hover:bg-cyan-400 transition duration-150 shadow-md">
+                        Register
+                    </button>
+                </form>
+                <p class="mt-6 text-center text-sm text-gray-600">
+                    Already have an account? 
+                    <a href="#" onclick="showLoginForm()" class="text-primary-blue hover:text-secondary-cyan font-semibold">Log in.</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Script for Page Routing and Modal Logic -->
+    <script>
+        // --- Product Data (30 items) ---
+        const allProducts = [
+            // (Product data is unchanged, collapsed for brevity)
+            { id: 1, name: "Turnitin Instructor", category: "Plagiarism & Grading Suite", price: "550 – 1,350", tag: "Sale!", tagColor: "bg-red-500", image: "Turnitin+Instructor", imgBg: "22d3ee" },
+            { id: 2, name: "Udemy Premium Access", category: "Skill Development Courses", price: "350 – 2,550", tag: "Sale!", tagColor: "bg-red-500", image: "Udemy+Premium", imgBg: "f97316" },
+            { id: 3, name: "Niche Scraper Pro", category: "E-commerce Product Finder", price: "320 – 2,650", tag: "Sale!", tagColor: "bg-red-500", image: "Niche+Scraper+Pro", imgBg: "1c3d5a" },
+            { id: 4, name: "Helium 10 Suite", category: "Amazon FBA Toolkit", price: "399 – 2,990", tag: "Sale!", tagColor: "bg-red-500", image: "Helium+10+Suite", imgBg: "f3f4f6" },
+            { id: 5, name: "Keyword Tool Pro", category: "SEO Keyword Research", price: "450 / Month", tag: "New", tagColor: "bg-green-500", image: "Keyword+Pro", imgBg: "1c3d5a" },
+            { id: 6, name: "Grammarly Premium", category: "Grammar & Style Correction", price: "299 / Month", tag: "Sale!", tagColor: "bg-red-500", image: "Grammarly", imgBg: "f97316" },
+            { id: 7, name: "Semrush Guru", category: "Advanced SEO & Marketing", price: "799 / Month", tag: "Pro", tagColor: "bg-primary-blue", image: "Semrush+Guru", imgBg: "22d3ee" },
+            { id: 8, name: "Ahrefs Suite", category: "Backlink Analysis & SEO", price: "650 / Month", tag: "Popular", tagColor: "bg-accent-orange", image: "Ahrefs+Tools", imgBg: "1c3d5a" },
+            { id: 9, name: "Jasper AI Writer", category: "AI Content Generation", price: "499 / Month", tag: "AI", tagColor: "bg-purple-500", image: "Jasper+AI", imgBg: "f97316" },
+            { id: 10, name: "Canva Pro", category: "Graphic Design Tool", price: "150 / Month", tag: "Graphic", tagColor: "bg-pink-500", image: "Canva+Pro", imgBg: "22d3ee" },
+            { id: 11, name: "Moz Pro", category: "Domain Authority Checker", price: "550 / Month", tag: "", tagColor: "bg-gray-500", image: "Moz+Pro", imgBg: "f3f4f6" },
+            { id: 12, name: "Wix Premium", category: "Website Builder Access", price: "199 / Month", tag: "Web", tagColor: "bg-indigo-500", image: "Wix+Premium", imgBg: "1c3d5a" },
+            { id: 13, name: "Shopify Pro Access", category: "E-commerce Platform", price: "399 / Month", tag: "E-comm", tagColor: "bg-green-700", image: "Shopify+Pro", imgBg: "ffffff" },
+            { id: 14, name: "Adobe Photoshop CC", category: "Image Editing Suite", price: "450 / Month", tag: "Design", tagColor: "bg-cyan-500", image: "Photoshop+CC", imgBg: "1c3d5a" },
+            { id: 15, name: "Adobe Premiere Pro", category: "Video Editing Software", price: "450 / Month", tag: "Media", tagColor: "bg-purple-700", image: "Premiere+Pro", imgBg: "f97316" },
+            { id: 16, name: "CodeCanyon Scripts", category: "Web Development Assets", price: "250 – 1,000", tag: "Code", tagColor: "bg-red-700", image: "CodeCanyon", imgBg: "22d3ee" },
+            { id: 17, name: "Envato Elements", category: "Unlimited Assets Access", price: "199 / Month", tag: "Design", tagColor: "bg-yellow-600", image: "Envato+Elements", imgBg: "1c3d5a" },
+            { id: 18, name: "NordVPN Premium", category: "Virtual Private Network", price: "99 / Month", tag: "Security", tagColor: "bg-blue-600", image: "NordVPN+Pro", imgBg: "f3f4f6" },
+            { id: 19, name: "ExpressVPN", category: "Virtual Private Network", price: "119 / Month", tag: "Security", tagColor: "bg-orange-700", image: "ExpressVPN", imgBg: "22d3ee" },
+            { id: 20, name: "LastPass Premium", category: "Password Manager", price: "59 / Month", tag: "Utility", tagColor: "bg-primary-blue", image: "LastPass", imgBg: "f97316" },
+            { id: 21, name: "Microsoft 365 Pro", category: "Office Suite Access", price: "299 / Year", tag: "Productivity", tagColor: "bg-red-600", image: "Microsoft+365", imgBg: "1c3d5a" },
+            { id: 22, name: "Google Workspace", category: "Business Email & Tools", price: "150 / Month", tag: "Productivity", tagColor: "bg-green-600", image: "Google+Workspace", imgBg: "f3f4f6" },
+            { id: 23, name: "Loom Pro", category: "Screen Recording Tool", price: "79 / Month", tag: "Video", tagColor: "bg-purple-600", image: "Loom+Pro", imgBg: "22d3ee" },
+            { id: 24, name: "Trello Gold", category: "Project Management", price: "89 / Month", tag: "PM", tagColor: "bg-cyan-600", image: "Trello+Gold", imgBg: "f97316" },
+            { id: 25, name: "ClickUp Unlimited", category: "All-in-One Workspace", price: "199 / Month", tag: "PM", tagColor: "bg-pink-600", image: "ClickUp+Unlimited", imgBg: "1c3d5a" },
+            { id: 26, name: "Notion Personal Pro", category: "Note-Taking & Docs", price: "99 / Month", tag: "Docs", tagColor: "bg-yellow-500", image: "Notion+Pro", imgBg: "f3f4f6" },
+            { id: 27, name: "Mailchimp Essentials", category: "Email Marketing Platform", price: "350 / Month", tag: "Marketing", tagColor: "bg-orange-500", image: "Mailchimp", imgBg: "22d3ee" },
+            { id: 28, name: "ActiveCampaign", category: "CRM & Automation", price: "450 / Month", tag: "CRM", tagColor: "bg-blue-800", image: "ActiveCampaign", imgBg: "f97316" },
+            { id: 29, name: "Hunter.io Pro", category: "Email Finder Tool", price: "120 / Month", tag: "SEO", tagColor: "bg-green-900", image: "Hunter+io+Pro", imgBg: "1c3d5a" },
+            { id: 30, name: "Zapier Starter", category: "Automation Integration", price: "149 / Month", tag: "Automation", tagColor: "bg-red-900", image: "Zapier+Starter", imgBg: "22d3ee" },
+        ];
+        
+        // --- Blog Post Data (24 items) ---
+        const allBlogPosts = [
+            // (Blog post data is unchanged, collapsed for brevity)
+            { id: 1, title: "10 Reasons Why Your Business Needs Semrush", category: "SEO & Marketing", date: "Nov 01, 2025", author: "Admin", excerpt: "Semrush is more than just an SEO tool. Discover 10 ways it can transform your entire marketing strategy.", image: "Semrush+Blog+Post", imgBg: "f97316" },
+            { id: 2, title: "ChatGPT-4 vs Jasper: Which AI Writer is Worth Your Money?", category: "AI Tools", date: "Oct 28, 2025", author: "Jane Doe", excerpt: "A head-to-head comparison of the two leading AI content generators to help you decide which one fits your workflow.", image: "AI+Writer+Compare", imgBg: "1c3d5a" },
+            { id: 3, title: "How to Use Helium 10 to Find Profitable Products on Amazon", category: "E-commerce Tips", date: "Oct 25, 2025", author: "Admin", excerpt: "A beginner's guide to using the Black Box and X-Ray tools in Helium 10 to dominate the Amazon marketplace.", image: "Helium+10+Guide", imgBg: "22d3ee" },
+            { id: 4, title: "Boosting Your Team's Workflow with ClickUp", category: "Productivity", date: "Oct 22, 2025", author: "Alex Smith", excerpt: "Stop juggling apps. See how ClickUp can consolidate your tasks, docs, and goals into one beautiful platform.", image: "ClickUp+Workflow", imgBg: "f3f4f6" },
+            { id: 5, title: "The Ultimate Guide to Plagiarism Checking with Turnitin", category: "Productivity", date: "Oct 20, 2025", author: "Admin", excerpt: "Ensure academic and professional integrity. Learn the ins and outs of the world's most trusted plagiarism checker.", image: "Turnitin+Guide", imgBg: "f97316" },
+            { id: 6, title: "5 Canva Pro Features That Will Level Up Your Social Media", category: "SEO & Marketing", date: "Oct 18, 2025", author: "Jane Doe", excerpt: "Move beyond basic templates. We explore the Background Remover, Magic Resize, and other pro features.", image: "Canva+Pro+Tips", imgBg: "1c3d5a" },
+            { id: 7, title: "Site Announcement: New Group Buy Tools Added!", category: "Announcements", date: "Oct 15, 2025", author: "Admin", excerpt: "We're excited to announce the addition of Ahrefs and Moz Pro to our group buy packages. Learn more!", image: "New+Tools+Added", imgBg: "22d3ee" },
+            { id: 8, title: "Is Niche Scraper Still the Best Tool for Dropshipping?", category: "E-commerce Tips", date: "Oct 12, 2025", author: "Alex Smith", excerpt: "A 2025 review of Niche Scraper, its features, and how it stacks up against modern competitors for Shopify.", image: "Niche+Scraper+Review", imgBg: "f3f4f6" },
+            { id: 9, title: "Why Every Student Needs Grammarly Premium", category: "Productivity", date: "Oct 10, 2025", author: "Jane Doe", excerpt: "From essays to emails, see how Grammarly Premium does more than just fix typos—it improves your writing style.", image: "Grammarly+for+Students", imgBg: "f97316" },
+            { id: 10, title: "Advanced Keyword Research with Ahrefs", category: "SEO & Marketing", date: "Oct 07, 2025", author: "Admin", excerpt: "Go beyond search volume. Learn to use Keywords Explorer to find low-competition keywords with high traffic potential.", image: "Ahrefs+Keywords", imgBg: "1c3d5a" },
+            { id: 11, title: "Our Money-Back Guarantee: How We Build Trust", category: "Announcements", date: "Oct 05, 2025", author: "Admin", excerpt: "We stand by our service. Learn about our 100% money-back guarantee policy and how we ensure customer satisfaction.", image: "Money+Back+Guarantee", imgBg: "22d3ee" },
+            { id: 12, title: "Automate Your Life with Zapier: A Beginner's Guide", category: "Productivity", date: "Oct 02, 2025", author: "Alex Smith", excerpt: "Connect your apps and automate workflows without writing any code. We show you how to get started with Zapier.", image: "Zapier+Guide", imgBg: "f3f4f6" },
+            { id: 13, title: "Using Udemy Courses to Onboard New Employees", category: "Productivity", date: "Sep 30, 2025", author: "Jane Doe", excerpt: "Discover how to leverage Udemy's vast library to create effective training programs for your team.", image: "Udemy+Training", imgBg: "f97316" },
+            { id: 14, title: "The Rise of AI in SEO: How to Adapt Your Strategy", category: "AI Tools", date: "Sep 27, 2025", author: "Admin", excerpt: "AI is changing SEO. Learn about SGE, AI-driven content, and how tools like Semrush are adapting.", image: "AI+and+SEO", imgBg: "1c3d5a" },
+            { id: 15, title: "5 Common Mistakes to Avoid on Shopify", category: "E-commerce Tips", date: "Sep 24, 2025", author: "Alex Smith", excerpt: "From poor theme choices to bad SEO, we cover the 5 mistakes that could be costing you sales on Shopify.", image: "Shopify+Mistakes", imgBg: "22d3ee" },
+            { id: 16, title: "Mastering Photoshop: 5 Tips for Non-Designers", category: "Productivity", date: "Sep 21, 2025", author: "Jane Doe", excerpt: "You don't need to be a designer to use Photoshop. Learn 5 simple tips for quick, professional edits.", image: "Photoshop+Tips", imgBg: "f3f4f6" },
+            { id: 17, title: "How Moz Pro Helps You Track Your Competitors", category: "SEO & Marketing", date: "Sep 18, 2025", author: "Admin", excerpt: "An in-depth look at the 'True Competitor' tool in Moz Pro and how to use it to gain an edge.", image: "Moz+Pro+Competitors", imgBg: "f97316" },
+            { id: 18, title: "Why Your Small Business Needs Google Workspace", category: "Productivity", date: "Sep 15, 2025", author: "Alex Smith", excerpt: "It's more than just Gmail. We explore Drive, Docs, Meet, and Sheets for business.", image: "Google+Workspace+Biz", imgBg: "1c3d5a" },
+            { id: 19, title: "Maximizing Your ROI with Mailchimp Automations", category: "SEO & Marketing", date: "Sep 12, 2025", author: "Jane Doe", excerpt: "Learn to set up welcome emails, abandoned cart reminders, and customer journeys in Mailchimp.", image: "Mailchimp+Automation", imgBg: "22d3ee" },
+            { id: 20, title: "Envato Elements: The Best Value for Creatives?", category: "Design", date: "Sep 10, 2025", author: "Admin", excerpt: "Unlimited downloads of stock photos, videos, themes, and plugins. Is Envato Elements worth the subscription?", image: "Envato+Elements+Review", imgBg: "f3f4f6" },
+            { id: 21, title: "Using Notion as Your Company's Second Brain", category: "Productivity", date: "Sep 08, 2025", author: "Alex Smith", excerpt: "How to set up a powerful, centralized wiki and project management system using Notion.", image: "Notion+Second+Brain", imgBg: "f97316" },
+            { id: 22, title: "Jasper AI vs. Human Copywriters: A Showdown", category: "AI Tools", date: "Sep 05, 2025", author: "Jane Doe", excerpt: "We pit Jasper AI against a professional copywriter for a landing page. The results might surprise you.", image: "Jasper+vs+Human", imgBg: "1c3d5a" },
+            { id: 23, title: "Top 5 Security Risks and Why You Need a VPN", category: "Security", date: "Sep 03, 2025", author: "Admin", excerpt: "From public Wi-Fi to ISP tracking, learn about the risks and how a VPN like NordVPN protects you.", image: "VPN+Security+Risks", imgBg: "22d3ee" },
+            { id: 24, title: "Hunter.io vs. Snov.io: Best Email Finder Tool", category: "SEO & Marketing", date: "Sep 01, 2025", author: "Alex Smith", excerpt: "A deep dive comparison into the features, accuracy, and pricing of two leading email outreach tools.", image: "Email+Finder+Compare", imgBg: "f3f4f6" },
+        ];
+        
+        // --- Shop Page Dynamic Variables ---
+        const productsPerPage = 6;
+        const totalProducts = allProducts.length;
+        const totalShopPages = Math.ceil(totalProducts / productsPerPage); 
+        let currentShopPage = 1;
+
+        // --- Blog Page Dynamic Variables ---
+        const postsPerPage = 6;
+        const totalPosts = allBlogPosts.length;
+        const totalBlogPages = Math.ceil(totalPosts / postsPerPage);
+        let currentBlogPage = 1;
+
+
+        // --- Page Routing Logic ---
+        // UPDATED: 'affiliate-page' added to the list
+        const pages = ['home-page', 'about-page', 'contact-page', 'shop-page', 'blog-page', 'privacy-page', 'terms-page', 'affiliate-page']; 
+        const body = document.body;
+
+        function renderPage(pageId, anchor = null, initialPage = 0) {
+            
+            body.style.scrollBehavior = 'auto';
+            window.scrollTo(0, 0); // Always scroll to top on page switch
+
+            pages.forEach(id => {
+                const page = document.getElementById(id);
+                if (page) {
+                    if (id === pageId) {
+                        page.classList.remove('page-hidden');
+                        page.classList.add('page-content');
+
+                        // Special actions for dynamic pages
+                        if (pageId === 'shop-page' && initialPage > 0) {
+                            loadShopPage(initialPage);
+                        }
+                        if (pageId === 'blog-page' && initialPage > 0) {
+                            loadBlogPage(initialPage);
+                        }
+                        // No special action needed for static pages like 'affiliate-page'
+                        
+                        if (anchor) {
+                            setTimeout(() => {
+                                const target = document.querySelector(anchor);
+                                if (target) {
+                                    body.style.scrollBehavior = 'smooth';
+                                    target.scrollIntoView({ behavior: 'smooth' });
+                                }
+                            }, 50); 
+                        }
+                    } else {
+                        page.classList.add('page-hidden');
+                        page.classList.remove('page-content');
+                    }
+                }
+            });
+            body.style.scrollBehavior = 'smooth';
+        }
+
+        // --- Shop Page Dynamic Loading Logic (Unchanged) ---
+        function loadShopPage(pageNumber) {
+            if (pageNumber < 1 || pageNumber > totalShopPages) return;
+            currentShopPage = pageNumber;
+            
+            const startIdx = (currentShopPage - 1) * productsPerPage;
+            const endIdx = startIdx + productsPerPage;
+            const productsToShow = allProducts.slice(startIdx, endIdx);
+
+            const productListContainer = document.getElementById('product-list-container');
+            const resultsCountElement = document.getElementById('results-count');
+            const paginationControls = document.getElementById('pagination-controls');
+
+            const displayStart = startIdx + 1;
+            const displayEnd = Math.min(endIdx, totalProducts);
+            resultsCountElement.textContent = `Showing ${displayStart}–${displayEnd} of ${totalProducts} results (Page ${currentShopPage} of ${totalShopPages})`;
+
+            productListContainer.innerHTML = productsToShow.map(product => `
+                <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                    <div class="p-6">
+                        ${product.tag ? `<div class="text-xs font-semibold text-white ${product.tagColor} inline-block px-2 py-1 rounded-full mb-3">${product.tag}</div>` : `<div class="mb-3 h-5"></div>`}
+                        <img src="https://placehold.co/400x200/${product.imgBg}/ffffff?text=${product.image}" alt="${product.name}" class="w-full h-32 object-cover rounded-md mb-4">
+                        <h3 class="text-xl font-bold text-primary-blue truncate">${product.name}</h3>
+                        <p class="text-sm text-gray-500 mb-4">${product.category}</p>
+                        <p class="text-2xl font-extrabold text-accent-orange">৳ ${product.price}</p>
+                        <button class="mt-4 w-full bg-secondary-cyan text-primary-blue font-semibold py-2 rounded-lg hover:bg-cyan-400 transition duration-150">
+                            Select Options
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            let paginationHtml = `<nav class="flex space-x-2" aria-label="Pagination">`;
+            const prevDisabled = currentShopPage === 1 ? 'pointer-events-none opacity-50' : '';
+            paginationHtml += `<a href="#" onclick="loadShopPage(${currentShopPage - 1}); return false;" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-500 hover:bg-gray-100 ${prevDisabled}">Previous</a>`;
+            for (let i = 1; i <= totalShopPages; i++) {
+                const activeClass = i === currentShopPage ? 'text-white bg-primary-blue border-primary-blue' : 'text-gray-700 hover:bg-gray-100 border-gray-300';
+                paginationHtml += `<a href="#" onclick="loadShopPage(${i}); return false;" class="px-4 py-2 text-sm font-medium border rounded-lg ${activeClass}">${i}</a>`;
+            }
+            const nextDisabled = currentShopPage === totalShopPages ? 'pointer-events-none opacity-50' : '';
+            paginationHtml += `<a href="#" onclick="loadShopPage(${currentShopPage + 1}); return false;" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-500 hover:bg-gray-100 ${nextDisabled}">Next</a>`;
+            paginationHtml += `</nav>`;
+            paginationControls.innerHTML = paginationHtml;
+        }
+
+        
+        // --- Blog Page Dynamic Loading Logic (Unchanged) ---
+        function loadBlogPage(pageNumber) {
+            if (pageNumber < 1 || pageNumber > totalBlogPages) return;
+            currentBlogPage = pageNumber;
+            
+            const startIdx = (currentBlogPage - 1) * postsPerPage;
+            const endIdx = startIdx + postsPerPage;
+            const postsToShow = allBlogPosts.slice(startIdx, endIdx);
+
+            const blogListContainer = document.getElementById('blog-list-container');
+            const resultsCountElement = document.getElementById('blog-results-count');
+            const paginationControls = document.getElementById('blog-pagination-controls');
+            const recentPostsList = document.getElementById('recent-posts-list');
+
+            const displayStart = startIdx + 1;
+            const displayEnd = Math.min(endIdx, totalPosts);
+            resultsCountElement.textContent = `Showing ${displayStart}–${displayEnd} of ${totalPosts} articles (Page ${currentBlogPage} of ${totalBlogPages})`;
+
+            blogListContainer.innerHTML = postsToShow.map(post => `
+                <div class="blog-card bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 col-span-1">
+                    <img src="https://placehold.co/600x300/${post.imgBg}/ffffff?text=${post.image}" alt="${post.title}" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <p class="text-sm font-semibold text-secondary-cyan mb-2">${post.category}</p>
+                        <h3 class="text-xl font-bold text-primary-blue mb-3 h-14 truncate" title="${post.title}">${post.title}</h3>
+                        <p class="text-gray-600 mb-4 h-20 line-clamp-3">${post.excerpt}</p>
+                        <div class="text-xs text-gray-500 mb-4">
+                            By <span class="font-medium text-gray-700">${post.author}</span> on ${post.date}
+                        </div>
+                        <a href="#" class="font-semibold text-accent-orange hover:text-orange-600 transition duration-150">
+                            Read More &rarr;
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+
+            let paginationHtml = `<nav class="flex space-x-2" aria-label="Pagination">`;
+            const prevDisabled = currentBlogPage === 1 ? 'pointer-events-none opacity-50' : '';
+            paginationHtml += `<a href="#" onclick="loadBlogPage(${currentBlogPage - 1}); return false;" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-500 hover:bg-gray-100 ${prevDisabled}">Previous</a>`;
+            for (let i = 1; i <= totalBlogPages; i++) {
+                const activeClass = i === currentBlogPage ? 'text-white bg-primary-blue border-primary-blue' : 'text-gray-700 hover:bg-gray-100 border-gray-300';
+                paginationHtml += `<a href="#" onclick="loadBlogPage(${i}); return false;" class="px-4 py-2 text-sm font-medium border rounded-lg ${activeClass}">${i}</a>`;
+            }
+            const nextDisabled = currentBlogPage === totalBlogPages ? 'pointer-events-none opacity-50' : '';
+            paginationHtml += `<a href="#" onclick="loadBlogPage(${currentBlogPage + 1}); return false;" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg text-gray-500 hover:bg-gray-100 ${nextDisabled}">Next</a>`;
+            paginationHtml += `</nav>`;
+            paginationControls.innerHTML = paginationHtml;
+
+            recentPostsList.innerHTML = allBlogPosts.slice(0, 4).map(post => `
+                <li class="border-b last:border-b-0 pb-2 last:pb-0">
+                    <a href="#" class="font-medium text-gray-700 hover:text-primary-blue truncate block" title="${post.title}">${post.title}</a>
+                    <p class="text-xs text-gray-400">${post.date}</p>
+                </li>
+            `).join('');
+        }
+
+
+        // --- Authentication Modal Logic (Unchanged) ---
+        const authModal = document.getElementById('auth-modal');
+        const modalContent = authModal.querySelector('.modal-content');
+        const loginPanel = document.getElementById('login-panel');
+        const registerPanel = document.getElementById('register-panel');
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
+
+        function openAuthModal(mode) {
+            authModal.classList.remove('hidden');
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+            if (mode === 'register') { showRegisterForm(); } else { showLoginForm(); }
+        }
+
+        function closeAuthModal() {
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => { authModal.classList.add('hidden'); }, 300);
+        }
+
+        function setActiveTab(activeTab, inactiveTab) {
+            activeTab.classList.remove('bg-gray-200', 'text-gray-600', 'border-b-0');
+            activeTab.classList.add('bg-white', 'text-primary-blue', 'border-b-2', 'border-secondary-cyan', 'font-semibold');
+            inactiveTab.classList.remove('bg-white', 'text-primary-blue', 'border-b-2', 'border-secondary-cyan', 'font-semibold');
+            inactiveTab.classList.add('bg-gray-200', 'text-gray-600', 'border-b-0');
+        }
+
+        function showLoginForm() {
+            loginPanel.classList.remove('hidden');
+            registerPanel.classList.add('hidden');
+            setActiveTab(loginTab, registerTab);
+        }
+
+        function showRegisterForm() {
+            registerPanel.classList.remove('hidden');
+            loginPanel.classList.add('hidden');
+            setActiveTab(registerTab, loginTab);
+        }
+
+        // Close modal when clicking outside
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) { closeAuthModal(); }
+        });
+
+        // --- Initialize Page ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPage('home-page');
+            // Pre-load dynamic pages
+            loadShopPage(1);
+            loadBlogPage(1);
+        });
+    </script>
+
+</body>
+</html>
